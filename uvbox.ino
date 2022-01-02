@@ -3,6 +3,8 @@ const int RELAY_PIN = 2;
 const int BUTTON_PIN = 4;
 const int BUZZER_PIN = 7;
 const int CONTACTS_PIN = 8;
+const int ON_LED_PIN = 9;
+const int OFF_LED_PIN = 10;
 
 // defined values
 const unsigned long UV_RUN_TIME = 30000;
@@ -14,6 +16,8 @@ const int BUZZER_CONNECT_DURATION = 20;
 const int BUZZER_DISCONNECT_DURATION = 400;
 const int BUZZER_BEEPBEEP_DURATION = 70;
 const int BUZZER_BEEPBEEP_DELAY = 120;
+
+const int LED_OUTPUT_PWN = 153;
 
 // for button debounce
 int buttonLastSteadyState = HIGH;
@@ -35,6 +39,8 @@ void setup(){
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(BUZZER_PIN, OUTPUT);
     pinMode(CONTACTS_PIN, INPUT_PULLUP);
+    pinMode(ON_LED_PIN, OUTPUT);
+    pinMode(OFF_LED_PIN, OUTPUT);
     // pinMode(LED_BUILTIN, OUTPUT);
 }
 
@@ -55,6 +61,7 @@ void loop(){
         if (contactsConnected == false){
             if ((millis() - contactsLastConnected) >= CONTACTS_DISCONNECTED_DELAY){
                 digitalWrite(RELAY_PIN, LOW);
+                ledOff();
                 buzzerBeepBeepBeep(3);
                 runUV = false;
             }
@@ -66,15 +73,18 @@ void loop(){
         if ((millis() - uvStartTime) < UV_RUN_TIME){
             // digitalWrite(LED_BUILTIN, HIGH);
             digitalWrite(RELAY_PIN, HIGH);
+            ledOn();
         } else {
             // digitalWrite(LED_BUILTIN, LOW);
             digitalWrite(RELAY_PIN, LOW);
+            ledOff();
             buzzerBeep(BUZZER_DISCONNECT_DURATION);
             runUV = false;
         }
     } else {
         // digitalWrite(LED_BUILTIN, LOW);
         digitalWrite(RELAY_PIN, LOW);
+        ledOff();
     }
 }
 
@@ -126,4 +136,14 @@ void checkContacts(){
     } else {
         contactsConnected = false;
     }
+}
+
+void ledOn(){
+    analogWrite(ON_LED_PIN, LED_OUTPUT_PWN);
+    analogWrite(OFF_LED_PIN, 0);
+}
+
+void ledOff(){
+    analogWrite(ON_LED_PIN, 0);
+    analogWrite(OFF_LED_PIN, LED_OUTPUT_PWN);
 }
