@@ -17,7 +17,7 @@ const int BUZZER_DISCONNECT_DURATION = 400;
 const int BUZZER_BEEPBEEP_DURATION = 70;
 const int BUZZER_BEEPBEEP_DELAY = 120;
 
-const int LED_OUTPUT_PWN = 153;
+const int LED_OUTPUT_PWM = 153;
 
 // for button debounce
 int buttonLastSteadyState = HIGH;
@@ -50,6 +50,15 @@ void loop(){
     if (buttonPressed()){
         if (runUV == false){
             buzzerBeep(BUZZER_CONNECT_DURATION);
+
+            // cold starting the lamps
+            digitalWrite(RELAY_PIN, HIGH);
+            ledOn();
+            delay(900);
+            digitalWrite(RELAY_PIN, LOW);
+            ledOff();
+            delay(100);
+
             runUV = true;
             uvStartTime = millis();
         }
@@ -63,6 +72,11 @@ void loop(){
                 digitalWrite(RELAY_PIN, LOW);
                 ledOff();
                 buzzerBeepBeepBeep(3);
+                delay(200);
+                buzzerBeepBeepBeep(3);
+                delay(200);
+                buzzerBeepBeepBeep(3);
+                delay(200);
                 runUV = false;
             }
         }
@@ -78,6 +92,10 @@ void loop(){
             // digitalWrite(LED_BUILTIN, LOW);
             digitalWrite(RELAY_PIN, LOW);
             ledOff();
+            buzzerBeep(BUZZER_DISCONNECT_DURATION);
+            delay(200);
+            buzzerBeep(BUZZER_DISCONNECT_DURATION);
+            delay(200);
             buzzerBeep(BUZZER_DISCONNECT_DURATION);
             runUV = false;
         }
@@ -139,11 +157,11 @@ void checkContacts(){
 }
 
 void ledOn(){
-    analogWrite(ON_LED_PIN, LED_OUTPUT_PWN);
-    analogWrite(OFF_LED_PIN, 0);
+    analogWrite(ON_LED_PIN, LED_OUTPUT_PWM);
+    analogWrite(OFF_LED_PIN, LED_OUTPUT_PWM);
 }
 
 void ledOff(){
     analogWrite(ON_LED_PIN, 0);
-    analogWrite(OFF_LED_PIN, LED_OUTPUT_PWN);
+    analogWrite(OFF_LED_PIN, LED_OUTPUT_PWM);
 }
