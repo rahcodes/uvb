@@ -1,3 +1,5 @@
+// could have been much better lol don't criticise
+
 // IO pins
 const int RELAY_PIN = 2;
 const int BUTTON_PIN = 4;
@@ -51,14 +53,17 @@ void loop(){
         if (runUV == false){
             buzzerBeep(BUZZER_CONNECT_DURATION);
 
-            // cold starting the lamps
-            digitalWrite(RELAY_PIN, HIGH);
-            ledOn();
-            delay(900);
-            digitalWrite(RELAY_PIN, LOW);
-            ledOff();
-            delay(100);
-
+            // cold starting the lamps (just botching it lol)
+            checkContacts();
+            if (contactsConnected){
+                digitalWrite(RELAY_PIN, HIGH);
+                ledOn();
+                delay(900);
+                digitalWrite(RELAY_PIN, LOW);
+                ledOff();
+                delay(100);
+            }
+            
             runUV = true;
             uvStartTime = millis();
         }
